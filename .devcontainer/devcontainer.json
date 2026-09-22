@@ -1,5 +1,5 @@
 {
-  "name": "Spring Boot com Java 25",
+  "name": "Spring Boot com Java 25 e MongoDB",
 
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
 
@@ -15,7 +15,8 @@
     "vscode": {
       "extensions": [
         "vscjava.vscode-java-pack",
-        "vmware.vscode-boot-dev-pack"
+        "vmware.vscode-boot-dev-pack",
+        "mongodb.mongodb-vscode"
       ],
       "settings": {
         "java.configuration.updateBuildConfiguration": "automatic",
