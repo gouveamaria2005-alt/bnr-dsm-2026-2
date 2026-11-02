@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
+import br.edu.fatecfranca.api.dtos.TurmaResponse;
 import br.edu.fatecfranca.api.models.Turma;
 import br.edu.fatecfranca.api.services.TurmaService;
 
@@ -28,28 +31,30 @@ public class TurmaController {
     }
 
     @GetMapping
-    public List<Turma> listarTodos() {
-        return service.listarTodos();
+    public List<TurmaResponse> listarTodos() {
+        return service.listarComDetalhes();
     }
 
-    
     @GetMapping("/curso/{cursoId}")
-    public List<Turma> listarPorCurso(
+    public List<TurmaResponse> listarPorCurso(
             @PathVariable String cursoId) {
 
-        return service.listarPorCurso(cursoId);
+        return service.listarPorCursoComDetalhes(cursoId);
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<Turma> buscarPorId(@PathVariable String id) {
-        return service.buscarPorId(id)
+    public ResponseEntity<TurmaResponse> buscarPorId(
+            @PathVariable String id) {
+
+        return service.buscarComDetalhes(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Turma> criar(@RequestBody Turma turma) {
+    public ResponseEntity<Turma> criar(
+            @Valid @RequestBody Turma turma) {
+
         Turma turmaSalva = service.salvar(turma);
 
         return ResponseEntity
@@ -60,7 +65,7 @@ public class TurmaController {
     @PutMapping("/{id}")
     public ResponseEntity<Turma> atualizar(
             @PathVariable String id,
-            @RequestBody Turma turma) {
+            @Valid @RequestBody Turma turma) {
 
         if (service.buscarPorId(id).isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -73,11 +78,12 @@ public class TurmaController {
         return ResponseEntity.ok(turmaAtualizada);
     }
 
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable String id) {
+    public ResponseEntity<Void> excluir(
+            @PathVariable String id) {
+
         service.excluir(id);
+
         return ResponseEntity.noContent().build();
     }
-
 }

@@ -6,16 +6,34 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 @Document(collection = "cursos")
 public class Curso {
 
     @Id
     private String id;
 
+    @NotBlank(message = "O nome do curso é obrigatório.")
     private String nome;
+
+    @NotBlank(message = "A carga horária é obrigatória.")
+    @Pattern(
+        regexp = "^[1-9][0-9]*$",
+        message = "A carga horária deve ser um número inteiro maior que zero."
+    )
     private String cargaHoraria;
+
+    @NotBlank(message = "O valor do curso é obrigatório.")
+    @Pattern(
+        regexp = "^(?:0|[1-9][0-9]*)(?:[.,][0-9]{1,2})?$",
+        message = "O valor deve ser um número não negativo com até duas casas decimais."
+    )
     private String valor;
 
+    @Valid
     private List<Modulo> modulos;
 
     public Curso() {

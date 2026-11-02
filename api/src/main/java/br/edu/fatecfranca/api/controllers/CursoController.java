@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 import br.edu.fatecfranca.api.models.Curso;
 import br.edu.fatecfranca.api.services.CursoService;
 
@@ -33,14 +35,18 @@ public class CursoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Curso> buscarPorId(@PathVariable String id) {
+    public ResponseEntity<Curso> buscarPorId(
+            @PathVariable String id) {
+
         return service.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Curso> criar(@RequestBody Curso curso) {
+    public ResponseEntity<Curso> criar(
+            @Valid @RequestBody Curso curso) {
+
         Curso cursoSalvo = service.salvar(curso);
 
         return ResponseEntity
@@ -51,7 +57,7 @@ public class CursoController {
     @PutMapping("/{id}")
     public ResponseEntity<Curso> atualizar(
             @PathVariable String id,
-            @RequestBody Curso curso) {
+            @Valid @RequestBody Curso curso) {
 
         if (service.buscarPorId(id).isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -64,11 +70,11 @@ public class CursoController {
         return ResponseEntity.ok(cursoAtualizado);
     }
 
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable String id) {
+    public ResponseEntity<Void> excluir(
+            @PathVariable String id) {
+
         service.excluir(id);
         return ResponseEntity.noContent().build();
     }
-
 }

@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.edu.fatecfranca.api.dtos.MatriculaResponse;
+import br.edu.fatecfranca.api.models.Aluno;
 import br.edu.fatecfranca.api.models.Matricula;
+import br.edu.fatecfranca.api.models.Turma;
 import br.edu.fatecfranca.api.repositories.AlunoRepository;
 import br.edu.fatecfranca.api.repositories.MatriculaRepository;
 import br.edu.fatecfranca.api.repositories.TurmaRepository;
@@ -27,6 +30,41 @@ public class MatriculaService {
         this.repository = repository;
         this.alunoRepository = alunoRepository;
         this.turmaRepository = turmaRepository;
+    }
+
+    private MatriculaResponse montarResposta(Matricula matricula) {
+        Aluno aluno = alunoRepository.findById(matricula.getAlunoId())
+                .orElse(null);
+
+        Turma turma = turmaRepository.findById(matricula.getTurmaId())
+                .orElse(null);
+
+        return new MatriculaResponse(
+                matricula.getId(),
+                matricula.getAlunoId(),
+                matricula.getTurmaId(),
+                matricula.getData(),
+                matricula.getSituacao(),
+                matricula.getNotas(),
+                aluno,
+                turma);
+    }
+
+    public List<MatriculaResponse> listarComDetalhes() {
+        return repository.findAll().stream()
+                .map(this::montarResposta)
+                .toList();
+    }
+
+    public Optional<MatriculaResponse> buscarComDetalhes(String id) {
+        return repository.findById(id)
+                .map(this::montarResposta);
+    }
+
+    public List<MatriculaResponse> listarPorAlunoComDetalhes(String alunoId) {
+        return listarPorAluno(alunoId).stream()
+                .map(this::montarResposta)
+                .toList();
     }
 
     private void verificarAluno(String alunoId) {
@@ -73,7 +111,6 @@ public class MatriculaService {
     public Matricula salvar(Matricula matricula) {
         verificarAluno(matricula.getAlunoId());
         verificarTurma(matricula.getTurmaId());
-
         return repository.save(matricula);
     }
 

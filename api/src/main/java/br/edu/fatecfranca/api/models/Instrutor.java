@@ -6,25 +6,46 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.br.CPF;
+
 @Document(collection = "instrutores")
 public class Instrutor {
 
     @Id
     private String id;
 
+    @NotBlank(message = "O nome é obrigatório.")
     private String nome;
+
+    @NotBlank(message = "O CPF é obrigatório.")
+    @CPF(message = "O CPF informado é inválido.")
     private String cpf;
+
+    @NotBlank(message = "O telefone é obrigatório.")
     private String telefone;
+
+    @NotBlank(message = "O e-mail é obrigatório.")
+    @Email(message = "O e-mail informado é inválido.")
     private String email;
+
+    @Pattern(
+        regexp = "^(?:0|[1-9][0-9]*)(?:[.,][0-9]{1,2})?$",
+        message = "O valor da hora-aula deve ser um número não negativo com até duas casas decimais."
+    )
     private String valorHoraAula;
 
     private List<String> especialidades;
+
+    @Valid
     private List<Endereco> enderecos;
 
     public Instrutor() {
     }
 
-    
     public Instrutor(
             String id,
             String nome,

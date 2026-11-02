@@ -1,17 +1,35 @@
 
 package br.edu.fatecfranca.api.models;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 public class Horario {
 
+    @NotBlank(message = "O dia da semana é obrigatório.")
+    @Pattern(
+        regexp = "segunda-feira|terça-feira|quarta-feira|quinta-feira|sexta-feira|sábado|domingo",
+        message = "O dia da semana informado é inválido."
+    )
     private String diaSemana;
+
+    @NotBlank(message = "O horário inicial é obrigatório.")
+    @Pattern(
+        regexp = "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+        message = "O horário inicial deve estar no formato HH:mm."
+    )
     private String inicio;
+
+    @NotBlank(message = "O horário final é obrigatório.")
+    @Pattern(
+        regexp = "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+        message = "O horário final deve estar no formato HH:mm."
+    )
     private String fim;
 
-    
     public Horario() {
     }
 
-  
     public Horario(
             String diaSemana,
             String inicio,
